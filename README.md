@@ -1,6 +1,6 @@
 # 📩 Spam Message Detection
 
-A machine learning project that classifies SMS messages as **Spam** or **Not Spam (Ham)** using Natural Language Processing (NLP) and machine learning.
+A machine learning project that classifies SMS messages as **Spam** or **Not Spam (Ham)** using TF-IDF text vectorization and machine learning.
 
 The project compares multiple machine learning algorithms using **TF-IDF**, selects the best model using **5-fold cross-validation**, tunes its hyperparameters using **GridSearchCV**, and evaluates the final model on an unseen test dataset.
 
