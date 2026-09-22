@@ -1,79 +1,91 @@
-# 📩 Spam Message Detection
+# 📩 SMS Spam Message Detection
 
-A machine learning project that classifies SMS messages as **Spam** or **Not Spam (Ham)** using TF-IDF text vectorization and machine learning.
+A machine learning project that classifies SMS messages as **Spam** or **Not Spam** using **TF-IDF text vectorization** and multiple machine learning algorithms.
 
-The project compares multiple machine learning algorithms using **TF-IDF**, selects the best model using **5-fold cross-validation**, tunes its hyperparameters using **GridSearchCV**, and evaluates the final model on an unseen test dataset.
+The trained model is also deployed as a **Flask REST API on Render**, allowing predictions through a public API endpoint.
 
----
+## 🚀 Live API
+
+**Base URL:**
+https://spam-detector-um9j.onrender.com/
+
+The API is publicly deployed and can be used to make spam predictions.
+
+### Prediction Endpoint
+
+```text
+POST /predict
+```
+
+Example request:
+
+```json
+{
+    "message": "Congratulations! You won a FREE cash prize! Click now to claim your reward!"
+}
+```
+
+Example response:
+
+```json
+{
+    "message": "Congratulations! You won a FREE cash prize! Click now to claim your reward!",
+    "prediction": "SPAM",
+    "confidence": 72.0
+}
+```
 
 ## 📌 Project Overview
 
-Spam messages are unwanted messages that may contain advertisements, fake offers, prizes, or suspicious links.
+SMS spam messages are unwanted messages that may contain advertisements, scams, fake offers, or suspicious links.
 
-This project builds a machine learning system that learns patterns from previously labeled SMS messages and predicts whether a new message is:
+This project uses machine learning to automatically classify messages into:
 
-* 🟢 **Not Spam (Ham)**
-* 🔴 **Spam**
+* **SPAM**
+* **NOT SPAM**
 
-The project also performs error analysis by saving the messages that the model classified incorrectly.
-
----
+The project includes data preprocessing, TF-IDF feature extraction, model comparison, cross-validation, hyperparameter tuning, evaluation, error analysis, and deployment.
 
 ## 🎯 Objectives
 
 * Clean and prepare the SMS dataset
-* Convert text messages into numerical features using **TF-IDF**
-* Compare multiple machine learning models
-* Select the best model using **5-fold cross-validation**
-* Tune the selected model using **GridSearchCV**
-* Evaluate the final model using:
-
-  * Accuracy
-  * Precision
-  * Recall
-  * F1 Score
-* Generate a confusion matrix
+* Convert text messages into numerical features using TF-IDF
+* Train multiple machine learning models
+* Compare models using 5-fold cross-validation
+* Select the best model based on F1 score
+* Tune the selected model using GridSearchCV
+* Evaluate the final model on an unseen test set
 * Analyze misclassified messages
 * Save the trained model
-* Predict new messages using a command-line tool
-
----
+* Build a Flask REST API
+* Deploy the API using Render
 
 ## 📊 Dataset
 
-The project uses the **SMS Spam Collection** dataset.
-
-The dataset contains SMS messages labeled as:
+The project uses the **SMS Spam Collection dataset** containing SMS messages labeled as:
 
 * `ham` → Not Spam
 * `spam` → Spam
 
-The main columns used are:
+Dataset columns used:
 
 | Column | Description   |
 | ------ | ------------- |
 | `v1`   | Message label |
 | `v2`   | SMS message   |
 
-The unused columns from the original CSV are removed during preprocessing.
-
----
+The dataset contains approximately **5,500+ SMS messages**.
 
 ## 🛠️ Technologies Used
 
-* **Python**
-* **NumPy**
-* **Pandas**
-* **Scikit-learn**
-* **Matplotlib**
-* **TF-IDF**
-* **Logistic Regression**
-* **Multinomial Naive Bayes**
-* **Random Forest**
-* **Cross-Validation**
-* **GridSearchCV**
-
----
+* Python
+* NumPy
+* Pandas
+* Scikit-learn
+* Matplotlib
+* Flask
+* Gunicorn
+* Render
 
 ## 🔄 Machine Learning Workflow
 
@@ -82,138 +94,174 @@ SMS Dataset
      ↓
 Data Cleaning
      ↓
-Remove Missing Values
+Remove Duplicates / Missing Values
      ↓
-Remove Duplicate Rows
-     ↓
-Convert Labels
-     ↓
-Train/Test Split
+Train-Test Split
      ↓
 TF-IDF Vectorization
      ↓
-Compare 3 ML Models
-     ↓
 5-Fold Cross-Validation
+     ↓
+Model Comparison
      ↓
 Select Best Model
      ↓
-Hyperparameter Tuning
+GridSearchCV Hyperparameter Tuning
      ↓
 Final Test Evaluation
      ↓
-Save Model
+Save Trained Model
      ↓
-Predict New Messages
+Flask REST API
+     ↓
+Render Deployment
 ```
-
----
 
 ## 🤖 Machine Learning Models
 
-Three different algorithms are compared:
+Three classification algorithms were compared:
 
 ### 1. Logistic Regression
 
-A classification algorithm used to predict whether a message belongs to the Spam or Not Spam class.
+Used as a strong baseline model for text classification.
 
 ### 2. Multinomial Naive Bayes
 
-A machine learning algorithm commonly used for text classification.
+A commonly used algorithm for text classification problems.
 
 ### 3. Random Forest
 
-An ensemble model that combines multiple decision trees to make predictions.
+An ensemble learning algorithm used to compare performance with the other models.
 
-All three models use the same **TF-IDF text representation**.
+## 📝 TF-IDF
 
----
-
-## 🔤 TF-IDF
-
-TF-IDF stands for **Term Frequency–Inverse Document Frequency**.
-
-It converts text messages into numerical values that machine learning algorithms can understand.
+**TF-IDF (Term Frequency-Inverse Document Frequency)** converts text messages into numerical feature vectors.
 
 The project uses:
 
-```python
-TfidfVectorizer(
-    lowercase=True,
-    stop_words="english",
-    max_features=5000,
-    ngram_range=(1, 2)
-)
-```
+* Lowercase conversion
+* English stop-word removal
+* Unigrams and bigrams
+* Maximum feature limits
 
-This allows the model to use:
-
-* Individual words
-* Two-word combinations
-* Up to 5,000 features
-
----
+TF-IDF is applied inside a Scikit-learn Pipeline to avoid data leakage during cross-validation.
 
 ## 🔍 Model Selection
 
-Instead of choosing a model using the test set, the project uses **5-fold cross-validation** on the training data.
+The models are compared using **5-fold cross-validation** with **F1 score**.
 
-The models are compared using **F1 Score**.
+The model with the highest mean cross-validation F1 score is selected for further hyperparameter tuning.
 
-The model with the highest mean cross-validation F1 score is selected for further tuning.
-
-This helps avoid selecting a model simply because it performed well on one particular test set.
-
----
+This prevents choosing a model simply because of its performance on the final test set.
 
 ## ⚙️ Hyperparameter Tuning
 
-After selecting the best model, **GridSearchCV** is used to find better hyperparameter values.
+After selecting the best model, **GridSearchCV** is used to find suitable hyperparameters.
 
-The search uses:
+Examples include:
 
-* 5-fold cross-validation
-* F1 score
-
-The TF-IDF settings and model-specific parameters are tested together.
-
----
+* Logistic Regression → `C`
+* Naive Bayes → `alpha`
+* Random Forest → `n_estimators`, `max_depth`
+* TF-IDF → `max_features`, `ngram_range`
 
 ## 📈 Model Evaluation
 
-The final selected model is evaluated on the test dataset using:
+The final model is evaluated on an unseen test set using:
 
-### Accuracy
+* Accuracy
+* Precision
+* Recall
+* F1 Score
+* Classification Report
+* Confusion Matrix
 
-Percentage of total predictions that are correct.
-
-### Precision
-
-Of the messages predicted as Spam, how many were actually Spam?
-
-### Recall
-
-Of the actual Spam messages, how many did the model detect?
-
-### F1 Score
-
-A combined measure of Precision and Recall.
-
-### Confusion Matrix
-
-Shows:
-
-* True Negatives
-* False Positives
-* False Negatives
-* True Positives
-
----
-
-## 📂 Project Structure
+The project also saves:
 
 ```text
-spam_detector/
+results/
+├── confusion_matrix.png
+├── model_comparison.png
+├── metrics.csv
+└── misclassified_messages.csv
+```
+
+## 🔎 Error Analysis
+
+Misclassified messages are saved in:
+
+```text
+results/misclassified_messages.csv
+```
+
+This allows incorrect predictions to be inspected and analyzed.
+
+## 🌐 Flask API
+
+The trained Scikit-learn pipeline is saved as:
+
+```text
+models/spam_model.pkl
+```
+
+Flask loads the saved model and provides a REST API endpoint:
+
+```text
+POST /predict
+```
+
+The API accepts a message and returns:
+
+* Message
+* Prediction
+* Confidence
+
+### Example
+
+Request:
+
+```json
+{
+    "message": "Hey, are you coming to college tomorrow?"
+}
+```
+
+Response:
+
+```json
+{
+    "message": "Hey, are you coming to college tomorrow?",
+    "prediction": "NOT SPAM",
+    "confidence": 100.0
+}
+```
+
+## ☁️ Deployment
+
+The Flask API is deployed on **Render**.
+
+### Deployment Stack
+
+```text
+Scikit-learn Model
+        ↓
+Flask REST API
+        ↓
+Gunicorn
+        ↓
+Render
+        ↓
+Public API
+```
+
+Live application:
+
+https://spam-detector-um9j.onrender.com/
+
+## 📁 Project Structure
+
+```text
+spam-detector/
 │
 ├── data/
 │   └── spam.csv
@@ -229,184 +277,110 @@ spam_detector/
 │
 ├── train.py
 ├── predict.py
+├── app.py
 ├── requirements.txt
-└── README.md
+├── README.md
+└── .gitignore
 ```
 
----
-
-## 🚀 How to Run
+## ▶️ Run the Project Locally
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/greeshmagali/spam-detector
+git clone https://github.com/greeshmagali/spam-detector.git
+cd spam-detector
 ```
 
-### 2. Open the project folder
-
-```bash
-cd spam_detector
-```
-
-### 3. Install the required libraries
+### 2. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Train the model
+### 3. Train the model
 
 ```bash
 python train.py
 ```
 
-This will:
+This generates the trained model and evaluation results.
 
-* Train and compare the models
-* Perform cross-validation
-* Tune the selected model
-* Evaluate it on the test set
-* Generate result files
-* Save the trained model
-
-The trained model will be saved as:
-
-```text
-models/spam_model.pkl
-```
-
----
-
-## 🧪 Test a New Message
-
-Run:
+### 4. Run the prediction script
 
 ```bash
 python predict.py
 ```
 
-Then enter a message:
+Enter an SMS message when prompted.
 
-```text
-Enter a message: Congratulations! You won a free prize!
-```
-
-Example output:
-
-```text
-========================================
-Message: Congratulations! You won a free prize!
-Prediction: SPAM
-Confidence: 98.45 %
-========================================
-```
-
-You can also provide the message directly from the command line:
+### 5. Run the Flask API
 
 ```bash
-python predict.py "Congratulations! You won a free prize!"
+python app.py
 ```
 
----
-
-## 🔎 Error Analysis
-
-The project saves incorrectly classified messages in:
+The local API will run at:
 
 ```text
-results/misclassified_messages.csv
+http://127.0.0.1:5000
 ```
 
-This allows the model's mistakes to be inspected and analyzed.
+## 🧪 API Testing
 
-For example:
+Example PowerShell request:
+
+```powershell
+Invoke-RestMethod -Uri "https://spam-detector-um9j.onrender.com/predict" `
+-Method Post `
+-ContentType "application/json" `
+-Body '{"message":"Congratulations! You won a FREE cash prize! Click now to claim your reward!"}'
+```
+
+Example result:
 
 ```text
-message | actual | predicted
+Prediction: SPAM
+Confidence: 72%
 ```
 
-This helps identify the types of messages that are difficult for the model to classify.
-
----
-
-## 📊 Results
-
-After running `train.py`, the following files are generated:
-
-### Confusion Matrix
+Another tested example:
 
 ```text
-results/confusion_matrix.png
+Message: Hey, are you coming to college tomorrow?
+
+Prediction: NOT SPAM
+Confidence: 100%
 ```
 
-Shows how many messages were correctly and incorrectly classified.
-
-### Model Comparison
-
-```text
-results/model_comparison.png
-```
-
-Shows the mean cross-validation F1 score of the three models.
-
-### Metrics
-
-```text
-results/metrics.csv
-```
-
-Contains the final test-set:
-
-* Accuracy
-* Precision
-* Recall
-* F1 Score
-
-### Misclassified Messages
-
-```text
-results/misclassified_messages.csv
-```
-
-Contains the messages that were incorrectly classified by the final model.
-
----
-
-## 💡 Key Learning Outcomes
+## 📚 What I Learned
 
 Through this project, I practiced:
 
-* Text preprocessing
-* TF-IDF vectorization
-* Binary classification
-* Logistic Regression
-* Naive Bayes
-* Random Forest
-* Train/test splitting
+* Data cleaning with Pandas
+* Text feature extraction using TF-IDF
+* Classification algorithms
+* Train-test splitting
+* Stratified sampling
 * 5-fold cross-validation
-* Hyperparameter tuning
-* Pipeline-based machine learning
-* Model evaluation
-* Confusion matrix analysis
+* Model selection using F1 score
+* Hyperparameter tuning with GridSearchCV
+* Classification metrics
+* Confusion matrix
 * Error analysis
-* Model serialization
-* Building a command-line prediction tool
-
----
+* Saving and loading ML models
+* Building REST APIs with Flask
+* Deploying ML applications with Render
+* Testing APIs using PowerShell
 
 ## 🔮 Future Improvements
 
-Possible future improvements include:
-
-* Testing additional NLP preprocessing techniques
-* Trying additional machine learning algorithms
-* Handling class imbalance with additional techniques
-* Adding a web interface
-* Deploying the trained model as an API
-* Monitoring model performance on new messages
-
----
+* Add a web-based user interface
+* Improve handling of ambiguous messages
+* Experiment with additional text features
+* Try advanced NLP/deep learning approaches
+* Add automated API testing
+* Monitor model performance after deployment
 
 ## 👩‍💻 Author
 
@@ -414,4 +388,6 @@ Possible future improvements include:
 
 B.Tech – Computer Science and Engineering (AI & ML)
 
-Interested in **Artificial Intelligence, Machine Learning, Python, and Backend Development**.
+GitHub:
+https://github.com/greeshmagali
+
