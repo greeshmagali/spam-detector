@@ -288,7 +288,7 @@ spam-detector/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/greeshmagali/spam-detector.git
+git clone https://github.com/greeshmagali07/spam-detector.git
 cd spam-detector
 ```
 
@@ -389,4 +389,4 @@ Through this project, I practiced:
 B.Tech – Computer Science and Engineering (AI & ML)
 
 GitHub:
-https://github.com/greeshmagali
+https://github.com/greeshmagali07
